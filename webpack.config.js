@@ -49,7 +49,7 @@ module.exports = {
     historyApiFallback: true,
     noInfo: true,
     overlay: true,
-    public: "b950945b7bc643599919dc339992a08e.vfs.cloud9.us-east-2.amazonaws.com"
+    public: "606aea8a83e84154a9b1be6bb48fb76b.vfs.cloud9.us-east-2.amazonaws.com"
   },
   performance: {
     hints: false
