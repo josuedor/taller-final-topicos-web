@@ -73,7 +73,7 @@
                 </b-form-group>
                 
                 <div slot="modal-footer" class="w-100">
-                  <b-button @click.prevent="signup" variant="primary" class="float-right">Create</b-button>
+                  <b-button @click.prevent="signup" @click="hideModal" variant="primary" class="float-right">Create</b-button>
                   <b-button type="reset" variant="danger" class="float-right">Reset</b-button>
                </div>
 
@@ -86,7 +86,7 @@
     </b-modal>
      
     <!-- the modal Login-->
-    <b-modal id="signIn" ref="signIp" hide-footer>
+    <b-modal id="signIn" ref="signIn" hide-footer>
      <b-container class="bv-example-row">
         <b-row>
              <b-col cols="12" md="12">
@@ -116,7 +116,7 @@
                 </b-form-group>
                 
                 <div slot="modal-footer" class="w-100">
-                  <b-button @click.prevent="signin" variant="primary" class="float-right">Login</b-button>
+                  <b-button @click.prevent="signin" @click="hideModal" variant="primary" class="float-right">Login</b-button>
                   <b-button type="reset" variant="danger" class="float-right">Reset</b-button>
                </div>
 
@@ -130,7 +130,7 @@
     
     
     <!-- the modal CreateAnswer-->
-    <b-modal id="createAnswerModal" hide-footer>
+    <b-modal id="createAnswerModal" ref="createAnswer" hide-footer>
      <b-container class="bv-example-row">
         <b-row>
              <b-col cols="12" md="12">
@@ -146,7 +146,7 @@
                 
                 <br>
                 <div slot="modal-footer" class="w-100">
-                  <b-button @click.prevent="createAnswer" variant="primary" class="float-right">Create</b-button>
+                  <b-button @click.prevent="createAnswer" @click="hideModal" variant="primary" class="float-right">Create</b-button>
                   <b-button type="reset" variant="danger" class="float-right">Reset</b-button>
                </div>
 
@@ -159,7 +159,7 @@
     </b-modal>
     
     
-    <b-modal id="editQuestionModal" hide-footer>
+    <b-modal id="editQuestionModal" ref="editQuestion" hide-footer>
      <b-container class="bv-example-row">
         <b-row>
              <b-col cols="12" md="12">
@@ -175,7 +175,7 @@
                 
                 <br>
                 <div slot="modal-footer" class="w-100">
-                  <b-button @click.prevent="editQuestion" variant="primary" class="float-right">Edit</b-button>
+                  <b-button @click.prevent="editQuestion" @click="hideModal" variant="primary" class="float-right">Edit</b-button>
                   <b-button type="reset" variant="danger" class="float-right">Reset</b-button>
                </div>
 
@@ -196,7 +196,7 @@
                <b-form id="createQuestionForm" v-if="logged">
 
                 <b-form-group id="grupo7"
-                              label="Question:"
+                              label="Create Question:"
                               label-for="text">
                   <b-form-input name="text"
                                 type="text"
@@ -304,6 +304,7 @@ export default {
     this._loadQuestions();
     if(window.localStorage.getItem('token')){
       this.logged = true;
+      this._loadUserName();
     }
   },
   methods: {
@@ -314,6 +315,15 @@ export default {
       .then( response => {
         this.loading = false;
         this.questions = response.data.data;
+      })
+    },
+    _loadUserName(){
+      axios.get(`${config.baseURL}/users/profile?token=${window.localStorage.getItem('token')}`, {
+        withCredentials: true
+      })
+      .then( response => {
+        this.user.firstname = response.data.firstname;
+        this.user.lastname = response.data.lastname;
       })
     },
     createQuestion(){
@@ -341,7 +351,9 @@ export default {
       })
       .then( response => {
         this._loadQuestions();
-      })
+      }).catch(function (error) {
+        alert(error.response.data.message);
+      });
     },
     createAnswer(){
       const form = document.getElementById('createAnswerForm');
@@ -380,7 +392,9 @@ export default {
       })
       .then( response => {
         this._loadQuestions();
-      })
+      }).catch(function (error) {
+        alert(error.response.data.message);
+      });
     },
     signup(){
       const form = document.getElementById('signup');
@@ -422,6 +436,12 @@ export default {
     getQuestionId: function(e){
       console.log(e.currentTarget.parentElement.id);
       this.id_question = e.currentTarget.parentElement.id;
+    },
+    hideModal () {
+      this.$refs.signIn.hide();
+      this.$refs.signUp.hide();
+      this.$refs.createAnswer.hide();
+      this.$refs.editQuestion.hide();
     }
   }
 }
