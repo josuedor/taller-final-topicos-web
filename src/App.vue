@@ -279,7 +279,6 @@ export default {
       loading: true,
       questions: [],
       answers: [],
-      userId: '',
       id_question: '',
       user: {
         firstname: '',
@@ -394,7 +393,6 @@ export default {
       })
       .then( response => {
         this.logged = true;
-        this.userId = response.data.data.user;
         window.localStorage.setItem('token', response.data.token);
       })
     },
@@ -409,7 +407,6 @@ export default {
       })
       .then( response => {
         this.logged = true;
-        this.userId = response.data.user._id;
         this.user.firstname = response.data.user.firstname;
         this.user.lastname = response.data.user.lastname;
         window.localStorage.setItem('token', response.data.token);
@@ -425,20 +422,6 @@ export default {
     getQuestionId: function(e){
       console.log(e.currentTarget.parentElement.id);
       this.id_question = e.currentTarget.parentElement.id;
-    },
-    isMyQuestion: function(obj){
-      console.log(obj);
-      /*axios.get(`${config.baseURL}/questions/${e.target.parentElement.id}`,{
-        withCredentials: true
-      })
-      .then( response => {
-        if(response.data.data.user == this.userId){
-          return true;
-        }else{
-          return false;
-        }
-        
-      })*/
     }
   }
 }
